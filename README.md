@@ -24,7 +24,8 @@ $ python -V
 + [Instalar a lib Python sqlalchemy](https://pypi.org/project/SQLAlchemy/).
 + [Instalar a lib Python oauth2client](https://pypi.org/project/oauth2client/).
 + [Instalar a lib Python Google OAuth2 API Client](https://developers.google.com/api-client-library/python/apis/oauth2/v1).
-+ [Credenciais Google OAuth 2.0 ](https://console.developers.google.com/apis/credentials).
++ [Credenciais Google OAuth 2.0 ](https://console.developers.google.com/apis/credentials.
+Obs. A chave da credencial deve ser armazenada dentro do arquivo client_secrets.json, detalhado abaixo. 
 
 Uso
 -----
