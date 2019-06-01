@@ -1,0 +1,32 @@
+{% extends "header.html" %}
+{% block content %}
+{% include "nav.html" %}	
+	
+<div class="container">
+	<div class="row">
+		<div class="col">
+			<h3>Time de Futebol</h3>
+			{% for row_catalogs in catalogs %}
+				<a href = "{{url_for('showCatalog', categoria_name = row_catalogs.name)}}">
+					<h3>{{row_catalogs.name}}</h3>
+				</a>
+			{% endfor %}
+		</div>
+		  
+		<div class="col">
+			
+			<h2> Ultimos itens adicionados </h2>
+			
+			<h2>{{categoria_name}} ( {{total_itens}} items)</h2>
+			{% if items !=[] %}	
+				{% for row_items in items %}
+				<a href = "{{url_for('showItembyCatalog',  categoria_name = categoria_name, item_name = row_items.name)}}">
+					<h3>{{row_items.name}}</h3>
+				</a>
+				{% endfor %}
+			{% endif %}
+		</div>
+		  
+	</div>
+</div>	
+{% endblock %}

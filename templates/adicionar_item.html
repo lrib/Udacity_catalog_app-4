@@ -1,0 +1,31 @@
+{% extends "header.html" %}
+{% block content %}
+{% include "nav_privada.html" %}	
+	
+<div class="container">
+	
+	<div class="row banner menu">
+		<div class="col-md-11 col-md-offset-1 padding-none">
+			<h1> Novo jogador no {{categoria_name}}</h1>
+		</div>
+	</div>
+	
+	<div class="row">
+		<div class="col-md-6 col-md-offset-1 padding-top">
+			<form action="#" method = "post">
+				<div class="form-group">
+					<label for="name">Nome do jogador:</label>
+					<input type ="text" maxlength="50" class="form-control" name="nome" placeholder="Nome do jogador">
+
+					<label for="description">Description:</label>
+					<textarea class="form-control" maxlength="900" rows="3" name="descricao" placeholder="Descricao do jogador"></textarea>
+
+					<button type="submit" class="btn btn-default" id="submit" type="submit">
+					<span class="glyphicon glyphicon-glass" aria-hidden="true"></span>Criar jogador</button>
+				</div>
+			</form>
+		</div>
+	</div>
+	
+</div>	
+{% endblock %}

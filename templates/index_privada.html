@@ -1,0 +1,41 @@
+{% extends "header.html" %}
+{% block content %}
+{% include "nav_privada.html" %}	
+
+<div class = 'flash'>
+	{% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <ul>
+        {% for message in messages %}
+            <li> <strong> {{ message }} </strong> </li>
+        {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+</div>
+
+<div class="container">
+	<div class="row">
+		<div class="col">
+			<h3>Time de Futebol</h3>
+			{% for row_catalogs in catalogs %}
+			<a href = "{{url_for('showCatalog', categoria_name = row_catalogs.name)}}">
+				<h3>{{row_catalogs.name}}</h3>
+			</a>
+			{% endfor %}
+		</div>
+		  
+		<div class="col">
+			<h2>Ultimos jogadores adicionados</h2>
+			
+			{% for row_items in items %}
+			
+			<h3> {{row_items.name}} <em> <span class="badge badge-info"> ( {{catalogs[row_items.categoria_id-1].name}} ) </span> </em> </h3>
+			
+			{% endfor %}
+		</div>
+		  
+	</div>
+</div>
+
+{% endblock %}

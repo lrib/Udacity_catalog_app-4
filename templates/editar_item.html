@@ -1,0 +1,40 @@
+{% extends "header.html" %}
+{% block content %}
+{% include "nav_privada.html" %}	
+	
+<div class="container">
+	
+	<div class="row banner menu">
+		<div class="col-md-11 col-md-offset-1 padding-none">
+			<h1> Editar {{item_name}}</h1>
+		</div>
+	</div>
+	
+	<div class="row">
+		<div class="col-md-6 col-md-offset-1 padding-top">
+			<form action="#" method = "post">
+				<div class="form-group">
+					<label for="name">Nome do jogador:</label>
+					<input type ="text" maxlength="50" class="form-control" name="new_nome" value="{{item_name}}">
+
+					<label for="description">Descricao:</label>
+					<textarea  rows="3" maxlength="900" class="form-control" name="new_descricao">{{descricao_in}}</textarea>
+					<label for="description">Categoria:</label>
+					<input list="show_cat" maxlength="50" class="form-control" name="new_cat" placeholder="{{categoria_name}}">
+					
+					<datalist id="show_cat">
+					    <option value="{{categoria_name}}">
+					{% for row_items in catalogs %}
+						<option value="{{row_items.name}}">
+					{% endfor %}
+					</datalist>
+					
+					<button type="submit" class="btn btn-default" id="submit" type="submit">
+					<span class="glyphicon glyphicon-glass" aria-hidden="true"></span>Editar jogador</button>
+				</div>
+			</form>
+		</div>
+	</div>
+	
+</div>	
+{% endblock %}

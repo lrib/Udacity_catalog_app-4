@@ -1,0 +1,26 @@
+{% extends "header.html" %}
+{% block content %}
+{% include "nav_privada.html" %}
+
+<div class="container">
+
+	<article>
+
+	<h2> {{ item_name }}</h2>
+
+	<p> {{ descricao }} </p>
+
+	</article>
+
+	<a href = "{{url_for('EditItembyCatalog', categoria_name = categoria_name, item_name = item_name)}}">
+				<h3> Edit </h3>
+			</a>
+
+	<a href = "{{url_for('DeleteItembyCatalog', categoria_name = categoria_name, item_name = item_name)}}">
+				<h3> Delete </h3>
+			</a>
+	
+	</div>
+
+</div>
+{% endblock %}
