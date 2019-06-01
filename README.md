@@ -73,13 +73,15 @@ Resultado
 
 * Os resultados são apresentados por tipo de acesso.
   + Sem executar o login atravês de uma conta do Google o usuario pode apenas realizar as consultas do Times e Jogadores.
+  + Existe a possibilidade do usuario utilizar uma conta do Google para criar, editar e apagar um jogador.
   + Ao executar o login atravês de uma conta do Google o usuario pode criar, editar e apagar um jogador, porem estas ações somente são realizadas pelo usuario que criou o Jogador.
   + Existe um acesso a lista dos jogadores por JSON, atravês do link http://localhost:5000/catalog/int:Categoria/categoria.json
 
-
 Fontes consultadas
 ---------
-http://pep8online.com/checkresult 
-http://zetcode.com/python 
-https://www.w3schools.com 
+http://pep8online.com/checkresult
+http://zetcode.com/python
+https://www.w3schools.com
+https://developers.google.com/identity/protocols/OAuth2
+https://developers.google.com/identity/protocols/OAuth2WebServer
 
