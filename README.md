@@ -66,7 +66,7 @@ $ cd Udacity_catalog_app-4.git
 $ python project.py
 ```
 * Conecte a pagina web atraves do link: http://localhost:5000/
-* Na pagina principal é apresentado as Categorias como os Clubes de Futebos e os Itens como os seu Jogadores. 
+* Na pagina principal é apresentado as Categorias como os Clubes de Futebos e os Itens como os seus Jogadores. 
 * Os dados dos Itens podem ser extraidos por JSON, atraves do Link http://localhost:5000/catalog/int:Categoria/categoria.json , onde a Categoria é o nome do time de futebol existente.
 
 Resultado
@@ -81,8 +81,12 @@ Resultado
 Fontes consultadas
 ---------
 http://pep8online.com/checkresult
+
 http://zetcode.com/python
+
 https://www.w3schools.com
+
 https://developers.google.com/identity/protocols/OAuth2
+
 https://developers.google.com/identity/protocols/OAuth2WebServer
 
