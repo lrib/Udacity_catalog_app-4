@@ -80,14 +80,23 @@ Resultado
   + Existe um acesso a lista dos jogadores por JSON, atravês do link http://localhost:5000/catalog/int:Categoria/categoria.json
   Um exemplo dos endpoint do JSON é apresentado abaixo:
   {"Categoria":
+  
    [{
+   
     "categoria_id":1,
+    
     "date":"Fri, 31 May 2019 13:58:10 GMT",
+    
     "description":"Bruno Henrique Pinto....",
+    
     "name":"Bruno Henrique"
+    
      }
+     
      ....
+     
     ]
+    
    }
 
 Fontes consultadas
