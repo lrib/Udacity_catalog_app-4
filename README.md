@@ -63,7 +63,7 @@ $ git clone https://github.com/lrib/Udacity_catalog_app-4.git
 
 * Entre na pasta abaixo ou em uma outra selecionada 
 ```bash
-$ cd Udacity_catalog_app-4.git
+$ cd Udacity_catalog_app-4
 $ python project.py
 ```
 * Conecte a pagina web atraves do link: http://localhost:5000/
