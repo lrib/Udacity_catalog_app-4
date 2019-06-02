@@ -313,14 +313,12 @@ def showItembyCatalog(categoria_name, item_name):
     # Estrutura de decisao:
     # Se esta logado ou nao
     if 'username' not in login_session:
-        print ("Publica")
         return render_template('detalhe_item.html',
                                categoria_name=categoria_name,
                                item_name=item_name, descricao=descricao)
 
     # Se esta logado, se o usuario logado foi quem criou o item
     elif email_utilizador == login_session['email']:
-        print ("Privado")
         return render_template('detalhe_item_privado.html',
                                categoria_name=categoria_name,
                                item_name=item_name,
@@ -329,7 +327,6 @@ def showItembyCatalog(categoria_name, item_name):
 
     # Se esta logado e se nao e o utilizador q criou o Item
     else:
-        print ("Semi-Privado")
         return render_template('detalhe_item_semiprivado.html',
                                categoria_name=categoria_name,
                                item_name=item_name, descricao=descricao,
