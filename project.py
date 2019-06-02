@@ -333,7 +333,7 @@ def showItembyCatalog(categoria_name, item_name):
         return render_template('detalhe_item_semiprivado.html',
                                categoria_name=categoria_name,
                                item_name=item_name, descricao=descricao,
-							   username=login_session['username'])
+                               username=login_session['username'])
 
 
 # show the Item page (Privado) - Edit -.
