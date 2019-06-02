@@ -73,17 +73,10 @@ def googleconnect():
         response = make_response(json.dumps('Invalid state parameter.'), 401)
         response.headers['Content-Type'] = 'application/json'
         return response
-    else:
-        print ("Validei o ESTADO")
-        print request.args.get('state')
+
     # Obtain authorization code
-    CODE = ""
 
     token_temp = request.data
-    print ("Token")
-    print token_temp
-    print ("CLIENT_ID")
-    print CLIENT_ID
 
     try:
         # Specify the CLIENT_ID of the app that accesses the backend:
@@ -106,8 +99,6 @@ def googleconnect():
 
     # ID token is valid. Get the user's Google Account ID from the decoded toke
         userid = idinfo['sub']
-        print ("Userid:")
-        print userid
 
     except ValueError:
         response = make_response(
@@ -130,16 +121,12 @@ def googleconnect():
     result = json.loads(h.request(url, 'GET')[1])
     # If there was an error in the access token info, abort.
     if result.get('error') is not None:
-        print ("Erro no ACCESS TOKEN")
         response = make_response(json.dumps(result.get('error')), 500)
         response.headers['Content-Type'] = 'application/json'
         return response
 
-    print ("Passou do ACCESS TOKEN")
-
     # Verify that the access token is used for the intended user.
     gplus_id = idinfo['sub']
-    print gplus_id
 
     stored_access_token = login_session.get('access_token')
     stored_gplus_id = login_session.get('gplus_id')
@@ -156,26 +143,16 @@ def googleconnect():
     login_session['access_token'] = token_temp
     login_session['gplus_id'] = gplus_id
 
-    print ("PASSOU do STORAGE")
-
     # Get user info
-
     login_session['username'] = idinfo['name']
     login_session['picture'] = idinfo['picture']
     login_session['email'] = idinfo['email']
 
-    print ("username: ", login_session['username'])
-    print ("picture: ", login_session['picture'])
-    print ("email: ", login_session['email'])
-
     # see if user exists, if it doesn't make a new one
 
     user_id = getUserID(login_session['email'])
-    print ("Extrai o UserID ", user_id)
     if not user_id:
-        print ("Pegar ID do username: ", login_session['username'])
         user_id = createUser(login_session)
-        print ("ID do username: ", user_id)
 
     login_session['user_id'] = user_id
 
@@ -192,8 +169,6 @@ def googleconnect():
 
     flash("you are now logged in as %s" % login_session['username'])
 
-    print "done!"
-
     return output
 
 
@@ -204,22 +179,16 @@ def googlelogout():
 
 @app.route('/googledisconnect', methods=['POST'])
 def googledisconnect():
-    print 'User name is: googledisconnect'
     session.close()
     # Disconect from GOOGLE
     access_token = login_session.get('access_token')
     if access_token is None:
-        print 'Access Token is None'
         response = make_response(json.dumps
                                  ('Current user not connected..'), 200)
         response.headers['Content-Type'] = 'application/json'
         return response
 
     app.secret_key = urandom(24)
-
-    print 'In gdisconnect access token is %s', access_token
-    print 'User name is: '
-    print login_session['username']
 
     flash(" Logout do %s realizado com sucesso! " % login_session['username'])
 
@@ -255,7 +224,7 @@ def googledisconnect():
 def showMenu():
     # Pasta Publica. Todos tem acesso a esta pagina
     # Carrega toda a tabela de Categorias#
-    print ("Cheguei Main Menu")
+
     session.close()
     try:
         catalogs = session.query(Categoria).order_by(asc(Categoria.id)) \
@@ -265,19 +234,10 @@ def showMenu():
         #
     except BaseException:
         session.close()
-        print ("Deu merda")
-    try:
-        print ("Imprimindo o username, caso exista")
-        print login_session['username']
-    except BaseException:
-        print ("User name ainda nao criado")
 
     if 'username' not in login_session:
-        print ("Chegou na pagina principal publica")
         return render_template('index.html', catalogs=catalogs, items=items)
     else:
-        print ("Chegou na pagina principal privada")
-
         return render_template('index_privada.html',
                                catalogs=catalogs,
                                items=items,
@@ -310,8 +270,6 @@ def showCatalog(categoria_name):
         total_itens = 0
 
     if 'username' not in login_session:
-        print ("Pagina Catalogo Publico")
-
         return render_template('detalhe_menu.html',
                                categoria_name=categoria_name,
                                items=items,
@@ -319,8 +277,6 @@ def showCatalog(categoria_name):
                                total_itens=total_itens)
 
     else:
-        print ("Pagina Catalogo Privada")
-        print login_session['username']
         return render_template('detalhe_menu_privado.html',
                                categoria_name=categoria_name,
                                items=items, catalogs=catalogs,
@@ -354,24 +310,15 @@ def showItembyCatalog(categoria_name, item_name):
 
         descricao = "Descricao nao localizada"
 
-    print ("Pagina da descricao:")
-    print categoria_name
-    print item_name
-    print descricao
-    print email_utilizador
-    # print login_session['email']
-
     # Estrutura de decisao:
     # Se esta logado ou nao
     if 'username' not in login_session:
-        print ("Pagina Item Publico")
         return render_template('detalhe_item.html',
                                categoria_name=categoria_name,
                                item_name=item_name, descricao=descricao)
 
     # Se esta logado, se o usuario logado foi quem criou o item
     elif email_utilizador == login_session['email']:
-        print ("Pagina Item Privada, para edicao e remocao")
         return render_template('detalhe_item_privado.html',
                                categoria_name=categoria_name,
                                item_name=item_name,
@@ -380,7 +327,6 @@ def showItembyCatalog(categoria_name, item_name):
 
     # Se esta logado e se nao e o utilizador q criou o Item
     else:
-        print ("Pagina Item Publico. Utilizador nao fez a criacao do Item")
         return render_template('detalhe_item.html',
                                categoria_name=categoria_name,
                                item_name=item_name, descricao=descricao)
@@ -398,15 +344,6 @@ def EditItembyCatalog(categoria_name, item_name):
         # Se chegou com um POST
     if request.method == 'POST':
         xnow = datetime.now()
-        print ("Verifica as variaveis: FORM EDIT")
-        print request.form['new_nome']
-        print request.form['new_descricao']
-        print request.form['new_cat']
-        print xnow
-        print categoria_name
-        print login_session['username']
-        print ("Cat name:")
-        print categoria_name
         # Aponta para o Item item_name na tabela Item para fazer o update
         category = session.query(Categoria) \
                           .filter(Categoria.name == categoria_name).one()
@@ -419,13 +356,11 @@ def EditItembyCatalog(categoria_name, item_name):
         subItems.description = request.form['new_descricao']
         subItems.date = xnow
         if (request.form['new_cat']) == "":
-            print ("Valor da categoria nulo")
             new_category = session.query(Categoria) \
                                   .filter(Categoria.name == categoria_name) \
                                   .one()
 
         else:
-            print ("Valor da categoria nao nulo")
             new_category = session.query(Categoria) \
                                   .filter(Categoria.name == (request
                                           .form['new_cat'])).one()
@@ -514,15 +449,6 @@ def addItembyCatalog(categoria_name):
         # Se chegou com um POST
     if request.method == 'POST':
         xnow = datetime.now()
-        print ("Verifica as variaveis:")
-        print request.form['nome']
-        print request.form['descricao']
-        print login_session['user_id']
-        print xnow
-        print categoria_name
-        print login_session['username']
-        print ("Cat name:")
-        print categoria_name
         # Extrai a DB Categoria
         catalogs = session.query(Categoria) \
                           .filter(Categoria.name == categoria_name).one()
@@ -538,9 +464,6 @@ def addItembyCatalog(categoria_name):
                        name_cat=catalogs,
                        user=users)
 
-        print ("Estrutura de gravacao")
-
-        print newItem
         session.add(newItem)
         flash('Novo jogador %s Successfully Created' % newItem.name)
         session.commit()
