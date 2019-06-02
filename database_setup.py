@@ -45,6 +45,7 @@ class Item(Base):
             'categoria_id': self.categoria_id
         }
 
+
 # end of code
 engine = create_engine('sqlite:///project.db')
 

@@ -50,7 +50,7 @@ def getUserID(email):
     try:
         user = session.query(User).filter_by(email=email).one()
         return user.id
-    except:
+    except BaseException:
         return None
 
 # Create anti-forgery state token
@@ -60,8 +60,6 @@ def getUserID(email):
 def showLogin():
     state = ''.join(random.choice(string.ascii_uppercase + string.digits)
                     for x in xrange(32))
-    print ("Cheguei Barra Login")
-    print state
     login_session['state'] = state
 
     return render_template('login_google.html', STATE=state)
@@ -74,8 +72,6 @@ def googleconnect():
     if request.args.get('state') != login_session['state']:
         response = make_response(json.dumps('Invalid state parameter.'), 401)
         response.headers['Content-Type'] = 'application/json'
-        print ("NAO Validei o ESTADO - Novo LGN")
-        print request.args.get('state')
         return response
     else:
         print ("Validei o ESTADO")
@@ -208,6 +204,7 @@ def googlelogout():
 
 @app.route('/googledisconnect', methods=['POST'])
 def googledisconnect():
+    print 'User name is: googledisconnect'
     session.close()
     # Disconect from GOOGLE
     access_token = login_session.get('access_token')
@@ -224,6 +221,8 @@ def googledisconnect():
     print 'User name is: '
     print login_session['username']
 
+    flash(" Logout do %s realizado com sucesso! " % login_session['username'])
+
     output = ''
     output += '<h1>Godbay, '
     output += login_session['username']
@@ -234,6 +233,12 @@ def googledisconnect():
                            border-radius: 150px;\
                            -webkit-border-radius: 150px;\
                            -moz-border-radius: 150px;"> '
+
+    login_session['access_token'] = ""
+    login_session['gplus_id'] = ""
+    login_session['username'] = ""
+    login_session['email'] = ""
+    login_session['picture'] = ""
 
     del login_session['access_token']
     del login_session['gplus_id']
@@ -250,16 +255,21 @@ def googledisconnect():
 def showMenu():
     # Pasta Publica. Todos tem acesso a esta pagina
     # Carrega toda a tabela de Categorias#
+    print ("Cheguei Main Menu")
     session.close()
-    catalogs = session.query(Categoria).order_by(asc(Categoria.id)) \
-                                       .limit(7).all()
-    # Carrega a tabela com o itens
-    items = session.query(Item).order_by(desc(Item.date)).limit(7).all()
-    #
+    try:
+        catalogs = session.query(Categoria).order_by(asc(Categoria.id)) \
+                           .limit(7).all()
+        # Carrega a tabela com o itens
+        items = session.query(Item).order_by(desc(Item.date)).limit(7).all()
+        #
+    except BaseException:
+        session.close()
+        print ("Deu merda")
     try:
         print ("Imprimindo o username, caso exista")
         print login_session['username']
-    except:
+    except BaseException:
         print ("User name ainda nao criado")
 
     if 'username' not in login_session:
@@ -288,7 +298,7 @@ def showCatalog(categoria_name):
                           .filter(Categoria.name == categoria_name).one()
         items = session.query(Item).filter(Item.name_cat == category) \
                                    .order_by(desc(Item.date)).limit(5).all()
-    except:
+    except BaseException:
         items = []
     try:
         category = session.query(Categoria) \
@@ -296,7 +306,7 @@ def showCatalog(categoria_name):
 
         total_itens = session.query(Item) \
                              .filter(Item.name_cat == category).count()
-    except:
+    except BaseException:
         total_itens = 0
 
     if 'username' not in login_session:
@@ -340,7 +350,7 @@ def showItembyCatalog(categoria_name, item_name):
 
         email_utilizador = Iduser.email
 
-    except:
+    except BaseException:
 
         descricao = "Descricao nao localizada"
 
@@ -449,7 +459,7 @@ def EditItembyCatalog(categoria_name, item_name):
             catalogs = session.query(Categoria).order_by(asc(Categoria.name)) \
                                                .all()
 
-        except:
+        except BaseException:
 
             descricao_in = "Descricao nao localizada"
 
@@ -551,11 +561,12 @@ def restaurantMenuJSON(categoria_name):
         items = session.query(Item) \
                        .filter(Item.name_cat == category) \
                        .order_by(desc(Item.date)).all()
-    except:
+    except BaseException:
         items = []
     return jsonify(Categoria=[i.serialize for i in items])
 
 # Connect to Database and create database session
+
 
 engine = create_engine('sqlite:///project.db')
 Base.metadata.bind = engine

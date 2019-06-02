@@ -25,6 +25,7 @@ $ python -V
 + [Instalar a lib Python oauth2client](https://pypi.org/project/oauth2client/).
 + [Instalar a lib Python Google OAuth2 API Client](https://developers.google.com/api-client-library/python/apis/oauth2/v1).
 + [Credenciais Google OAuth 2.0 ](https://console.developers.google.com/apis/credentials.
++ A lista completa de todas as bibliotecas pode ser encontrada no arquivo requirements.txt.
 Obs. A chave da credencial deve ser armazenada dentro do arquivo client_secrets.json, detalhado abaixo. 
 
 Uso
@@ -77,6 +78,16 @@ Resultado
   + Existe a possibilidade do usuario utilizar uma conta do Google para criar, editar e apagar um jogador.
   + Ao executar o login atravês de uma conta do Google o usuario pode criar, editar e apagar um jogador, porem estas ações somente são realizadas pelo usuario que criou o Jogador.
   + Existe um acesso a lista dos jogadores por JSON, atravês do link http://localhost:5000/catalog/int:Categoria/categoria.json
+  Um exemplo dos endpoint do JSON é apresentado abaixo:
+   {"Categoria":
+		[{
+			"categoria_id":1,
+			"date":"Fri, 31 May 2019 13:58:10 GMT",
+			"description":"Bruno Henrique Pinto....",
+			"name":"Bruno Henrique"
+		 }
+		 ....
+		 ]}
 
 Fontes consultadas
 ---------
