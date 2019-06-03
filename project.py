@@ -1,5 +1,10 @@
-from flask import Flask, render_template, request
-from flask import redirect, jsonify, url_for, flash
+from flask import (Flask,
+                   render_template,
+                   request,
+                   redirect,
+                   jsonify,
+                   url_for,
+                   flash)
 from sqlalchemy import create_engine, asc, desc
 from sqlalchemy.orm import sessionmaker
 from database_setup import Base, Categoria, Item, User
@@ -10,7 +15,6 @@ import random
 import string
 from os import urandom
 from datetime import datetime
-
 # IMPORTS FOR GOOGLE LOGIN
 from oauth2client.client import flow_from_clientsecrets
 from oauth2client.client import FlowExchangeError
@@ -167,7 +171,7 @@ def googleconnect():
                            -webkit-border-radius: 150px;\
                            -moz-border-radius: 150px;"> '
 
-    flash("you are now logged in as %s" % login_session['username'])
+    flash("Voce esta logado como %s" % login_session['username'])
 
     return output
 
@@ -222,16 +226,15 @@ def googledisconnect():
 
 @app.route('/')
 def showMenu():
-    # Pasta Publica. Todos tem acesso a esta pagina
-    # Carrega toda a tabela de Categorias#
+    # Main page. Start where!
 
     session.close()
     try:
         catalogs = session.query(Categoria).order_by(asc(Categoria.id)) \
                            .limit(7).all()
-        # Carrega a tabela com o itens
+        # Load the tables with all items
         items = session.query(Item).order_by(desc(Item.date)).limit(7).all()
-        #
+
     except BaseException:
         session.close()
 
@@ -244,15 +247,15 @@ def showMenu():
                                username=login_session['username'])
 
 
-# show the Category page (Publico e Privado).
+# show the Category page.
 
 @app.route('/catalog/<string:categoria_name>/')
 def showCatalog(categoria_name):
-    # Carrega toda a tabela de Categorias#
+    # Load the Catalog
     session.close()
     catalogs = session.query(Categoria).order_by(asc(Categoria.name)) \
                                        .limit(7).all()
-    # Carrega os itens que foi
+    # Load the Items and Category
     try:
         category = session.query(Categoria) \
                           .filter(Categoria.name == categoria_name).one()
@@ -284,13 +287,14 @@ def showCatalog(categoria_name):
                                username=login_session['username'])
 
 
-# show the Item page (Publico e Privado).
+# show the Item page.
+
 @app.route('/catalog/<string:categoria_name>/<string:item_name>')
 def showItembyCatalog(categoria_name, item_name):
-    # Com a categoria e com o item, apresenta a descricao do item;
+    # With the Category, show the Item;
     session.close()
     try:
-        # extrai as informacoes da Categoria e do Item
+        # Get detailed information about category and Item
         category = session.query(Categoria) \
                     .filter(Categoria.name == categoria_name).one()
 
@@ -299,9 +303,9 @@ def showItembyCatalog(categoria_name, item_name):
                                   Item.name == item_name) \
                           .one()
 
-        # Extrai a descricao do Item
+        # Extract Item detail
         descricao = subItems.description
-        # Extrai o email do criador do Item
+        # Extract creator's email
         Iduser = session.query(User).filter(User.id == subItems.user_id).one()
 
         email_utilizador = Iduser.email
@@ -310,14 +314,13 @@ def showItembyCatalog(categoria_name, item_name):
 
         descricao = "Descricao nao localizada"
 
-    # Estrutura de decisao:
-    # Se esta logado ou nao
+    # Decisions about Login state:
     if 'username' not in login_session:
         return render_template('detalhe_item.html',
                                categoria_name=categoria_name,
                                item_name=item_name, descricao=descricao)
 
-    # Se esta logado, se o usuario logado foi quem criou o item
+    # If logged in, if the logged in user created the item
     elif email_utilizador == login_session['email']:
         return render_template('detalhe_item_privado.html',
                                categoria_name=categoria_name,
@@ -325,7 +328,7 @@ def showItembyCatalog(categoria_name, item_name):
                                descricao=descricao,
                                username=login_session['username'])
 
-    # Se esta logado e se nao e o utilizador q criou o Item
+    # If you are logged in and you are not the user who created the Item
     else:
         return render_template('detalhe_item_semiprivado.html',
                                categoria_name=categoria_name,
@@ -333,26 +336,26 @@ def showItembyCatalog(categoria_name, item_name):
                                username=login_session['username'])
 
 
-# show the Item page (Privado) - Edit -.
+# Item page - Edit
 @app.route('/catalog/<string:categoria_name>/<string:item_name>/Edit',
            methods=['GET', 'POST'])
-def EditItembyCatalog(categoria_name, item_name):
-    # verifica se o utilizador esta logado
+def editItembyCatalog(categoria_name, item_name):
+    # check if user is logged in
     session.close()
     if 'username' not in login_session:
-        # Se chegou aqui e pq nao esta logado
+        # If you arrived here you are not logged in
         return redirect('/login')
-        # Se chegou com um POST
+        # Arrived with a POST
     if request.method == 'POST':
         xnow = datetime.now()
-        # Aponta para o Item item_name na tabela Item para fazer o update
+        # Points to item_name in the Item table to update
         category = session.query(Categoria) \
                           .filter(Categoria.name == categoria_name).one()
 
         subItems = session.query(Item).filter(Item.name_cat == category,
                                               Item.name == item_name).one()
 
-        # Faz a atualizacao dos valores
+        # update the Item's data
         subItems.name = request.form['new_nome']
         subItems.description = request.form['new_descricao']
         subItems.date = xnow
@@ -370,7 +373,7 @@ def EditItembyCatalog(categoria_name, item_name):
         subItems.name_cat = new_category
         session.add(subItems)
         session.commit()
-        # retorna ao menu principal
+        # returns to main menu
 
         flash("Jogador %s atualizado com sucesso " % request.form['new_nome'])
 
@@ -379,19 +382,19 @@ def EditItembyCatalog(categoria_name, item_name):
     else:
 
         try:
-            # Extrai as informacoes da Categoria e do Item
+            # Extracts Category and Item Information
             category = session.query(Categoria) \
                         .filter(Categoria.name == categoria_name).one()
 
             subItems = session.query(Item).filter(Item.name_cat == category,
                                                   Item.name == item_name).one()
-            # Extrai a descricao do Item
+            # Extract Item Description
             descricao_in = subItems.description
-            # Extrai o email do criador do Item
-            Iduser = session.query(User).filter(User.id == subItems.user_id) \
+            # Extract the creator's email from Item
+            idUser = session.query(User).filter(User.id == subItems.user_id) \
                                         .one()
-            email_utilizador = Iduser.email
-            # Apresentar todas as categorias
+            email_utilizador = idUser.email
+            # Display all categories
             catalogs = session.query(Categoria).order_by(asc(Categoria.name)) \
                                                .all()
 
@@ -406,18 +409,18 @@ def EditItembyCatalog(categoria_name, item_name):
                                catalogs=catalogs)
 
 
-# show the Item page (Privado) - Remove -.
+# show the Item page - Delete.
 @app.route('/catalog/<string:categoria_name>/<string:item_name>/Delete',
            methods=['GET', 'POST'])
-def DeleteItembyCatalog(categoria_name, item_name):
-    # verifica se o utilizador esta logado
+def deleteItembyCatalog(categoria_name, item_name):
+    # check if user is logged in
     session.close()
     if 'username' not in login_session:
-        # Se chegou aqui e pq nao esta logado
+        # if you arrived here and you are not logged in
         return redirect('/login')
-        # Se chegou com um POST
+        # arrived with a POST
     if request.method == 'POST':
-        # Aponta para o Item item_name na tabela Item para fazer o update
+        # go to Item item_name in Item table to update
         category = session.query(Categoria) \
                     .filter(Categoria.name == categoria_name).one()
 
@@ -434,7 +437,7 @@ def DeleteItembyCatalog(categoria_name, item_name):
         return redirect(url_for('showMenu'))
 
     else:
-        # Fez um get na pagina de Delete
+        # Get at Delete page
         return render_template("delete_item.html",
                                categoria_name=categoria_name,
                                item_name=item_name)
@@ -442,21 +445,21 @@ def DeleteItembyCatalog(categoria_name, item_name):
 
 @app.route('/catalog/<string:categoria_name>/add', methods=['GET', 'POST'])
 def addItembyCatalog(categoria_name):
-    # verifica se o utilizador esta logado
+    # check if user is logged in
     session.close()
     if 'username' not in login_session:
-        # Se chegou aqui e pq nao esta logado
+        # if you arrived here and you are not logged in
         return redirect('/login')
-        # Se chegou com um POST
+        # arrived with a POST
     if request.method == 'POST':
         xnow = datetime.now()
-        # Extrai a DB Categoria
+        # extract the DB Category
         catalogs = session.query(Categoria) \
                           .filter(Categoria.name == categoria_name).one()
-        # Exteri a DB Usuario
+        # extract the DB User
         users = session.query(User) \
                        .filter(User.id == login_session['user_id']).one()
-        # Faz a gravacao
+        # Record!
         newItem = Item(name=request.form['nome'],
                        description=request.form['descricao'],
                        user_id=login_session['user_id'],
@@ -475,9 +478,9 @@ def addItembyCatalog(categoria_name):
                                categoria_name=categoria_name)
 
 
-# Making an API Endpoint (GET Request) - All Items IN Item
-@app.route('/catalog/<string:categoria_name>/categoria.json')
-def restaurantMenuJSON(categoria_name):
+# Making an API Endpoint (GET Request) - All Items IN Category
+@app.route('/catalog/<string:categoria_name>/Item.JSON')
+def itemCatalogJSON(categoria_name):
     session.close()
     try:
         category = session.query(Categoria) \
@@ -487,7 +490,8 @@ def restaurantMenuJSON(categoria_name):
                        .order_by(desc(Item.date)).all()
     except BaseException:
         items = []
-    return jsonify(Categoria=[i.serialize for i in items])
+    return jsonify(Item=[i.serialize for i in items])
+
 
 # Connect to Database and create database session
 
