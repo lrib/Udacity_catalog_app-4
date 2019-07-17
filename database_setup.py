@@ -66,6 +66,7 @@ class Item(Base):
 
 
 # end of code
-engine = create_engine('sqlite:///project.db')
+# engine = create_engine('sqlite:///project.db') changed because of Ubuntu Server
+engine = create_engine('postgresql://project:password@localhost/project')
 
 Base.metadata.create_all(engine)
