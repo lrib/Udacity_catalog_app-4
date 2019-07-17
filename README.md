@@ -82,11 +82,11 @@ Resultado
   + Existe a possibilidade do usuario utilizar uma conta do Google para criar, editar e apagar um jogador.
   + Ao executar o login atravês de uma conta do Google o usuario pode criar, editar e apagar um jogador, porem estas ações somente são realizadas pelo usuario que criou o Jogador.
   + A opção de adicionar um novo jogador aparecera assim que o o usuario com login Google selecionar uma Categoria.
-  + Existe um acesso a lista dos jogadores por JSON, atravês do [link](http://localhost:5000/catalog/str:Categoria/Item.JSON).
+  + Existe um acesso a lista dos jogadores por JSON, atravês do [link](http://localhost:5000/catalog/str:Categoria/categoria.json).
   Obs. Substituir o str:Categoria pelo time desejado.
   Um exemplo dos endpoint do JSON é apresentado abaixo:
   
-  {"Item":
+  {"Categoria":
   
    [{
    
