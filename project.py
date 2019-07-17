@@ -496,7 +496,8 @@ def itemCatalogJSON(categoria_name):
 # Connect to Database and create database session
 
 
-engine = create_engine('sqlite:///project.db')
+# engine = create_engine('sqlite:///project.db') removed because of Ubuntu Server
+engine = create_engine('postgresql://project:password@localhost/project')
 Base.metadata.bind = engine
 
 DBSession = sessionmaker(bind=engine)
