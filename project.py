@@ -28,7 +28,8 @@ from google.oauth2 import id_token
 from google.auth.transport import requests
 
 CLIENT_ID = json.loads(
-    open('client_secrets.json', 'r').read())['web']['client_id']
+    open('/var/www/FlaskApp/FlaskApp/client_secrets.json', 'r').read())['web']['client_id']
+
 APPLICATION_NAME = "Cliente Web 3"
 
 app = Flask(__name__)
